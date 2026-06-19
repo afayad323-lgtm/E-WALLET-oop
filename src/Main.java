@@ -19,7 +19,9 @@ public class Main {
             System.out.println("2- Withdraw");
             System.out.println("3- Show Balance");
             System.out.println("4- Show all users");
-            System.out.println("5- Exit");
+            System.out.println("5- Transfer");
+            System.out.println("6- Show Transactions");
+            System.out.println("7- Exit");
 
             System.out.print("Choice: ");
             int choice = reader.nextInt();
@@ -61,8 +63,28 @@ public class Main {
                     }
                     break;
                 }
-
                 case 5:
+                {
+                    System.out.print("Sender: ");
+                    User sender = findUser(users , reader);
+                    System.out.print("Receiver: ");
+                    User receiver = findUser(users , reader);
+                    if (sender != null && receiver != null){
+                        System.out.print("Amount: ");
+                        double amount = reader.nextDouble();
+                        sender.transfer(receiver , amount);
+                    }
+                    break;
+                }
+                case 6:
+                {
+                    User user = findUser(users , reader);
+                    if (user != null){
+                        user.showTransactions();
+                    }
+                    break;
+                }
+                case 7:
                     System.out.println("GOODBYE");
                     return;
 
