@@ -11,6 +11,11 @@ public class Main {
 
         users.add(new User("Ahmed"));
         users.add(new User("Ali"));
+        users.add(new User("Eman"));
+        users.add(new User("Malika"));
+        users.add(new User("Mostafa"));
+
+        WalletService service = new WalletService();
 
         while (true) {
 
@@ -19,9 +24,12 @@ public class Main {
             System.out.println("2- Withdraw");
             System.out.println("3- Show Balance");
             System.out.println("4- Show all users");
-            System.out.println("5- Transfer");
-            System.out.println("6- Show Transactions");
-            System.out.println("7- Exit");
+            System.out.println("5- Balance more than zero");
+            System.out.println("6- Transfer");
+            System.out.println("7- Show Transactions");
+            System.out.println("8- Total balance for all users");
+            System.out.println("9- Show Richest");
+            System.out.println("10- Exit");
 
             System.out.print("Choice: ");
             int choice = reader.nextInt();
@@ -29,7 +37,9 @@ public class Main {
             switch (choice) {
 
                 case 1: {
-                    User user = findUser(users, reader);
+                    System.out.println("Enter Your name: ");
+                    String name = reader.next();
+                    User user = service.findUser(users , name);
                     if (user != null) {
                         System.out.print("Enter your amount: ");
                         double dep = reader.nextDouble();
@@ -39,7 +49,9 @@ public class Main {
                 }
 
                 case 2: {
-                    User user = findUser(users, reader);
+                    System.out.println("Enter Your name: ");
+                    String name = reader.next();
+                    User user = service.findUser(users , name);
                     if (user != null) {
                         System.out.print("Enter your amount: ");
                         double wd = reader.nextDouble();
@@ -49,7 +61,9 @@ public class Main {
                 }
 
                 case 3: {
-                    User user = findUser(users, reader);
+                    System.out.println("Enter Your name: ");
+                    String name = reader.next();
+                    User user = service.findUser(users , name);
                     if (user != null) {
                         user.showBalance();
                     }
@@ -57,18 +71,24 @@ public class Main {
                 }
 
                 case 4: {
-                    for (User u : users) {
-                        u.showBalance();
-                        System.out.println("--------------");
-                    }
+                   users.forEach(User::showBalance);
+                   System.out.println("----------------");
                     break;
                 }
-                case 5:
+                case 5: {
+                    users.stream()
+                            .filter(u -> u.getBalance() > 0)
+                            .forEach(User::showBalance);
+                    break;
+                }
+                case 6:
                 {
                     System.out.print("Sender: ");
-                    User sender = findUser(users , reader);
+                    String senderName = reader.next();
+                     User sender = service.findUser(users , senderName);
                     System.out.print("Receiver: ");
-                    User receiver = findUser(users , reader);
+                    String receiverName = reader.next();
+                    User receiver = service.findUser(users , receiverName);
                     if (sender != null && receiver != null){
                         System.out.print("Amount: ");
                         double amount = reader.nextDouble();
@@ -76,15 +96,34 @@ public class Main {
                     }
                     break;
                 }
-                case 6:
+                case 7:
                 {
-                    User user = findUser(users , reader);
+                    System.out.println("Enter Your Name: ");
+                    String name = reader.next();
+                    User user = service.findUser(users , name);
                     if (user != null){
                         user.showTransactions();
                     }
                     break;
                 }
-                case 7:
+                case 8: {
+                   double total = users.stream()
+                            .mapToDouble(User::getBalance)
+                            .sum();
+                    System.out.println("total balance is: "+ total);
+                    break;
+                }
+                case 9: {
+                    User richest = users.stream()
+                            .max((u1 , u2) -> Double.compare(u1.getBalance(), u2.getBalance()))
+                            .orElse(null);
+                    if (richest != null){
+                        System.out.println("Richest user is: ");
+                        richest.showBalance();
+                    }
+                    break;
+                }
+                case 10:
                     System.out.println("GOODBYE");
                     return;
 
@@ -94,18 +133,4 @@ public class Main {
         }
     }
 
-    public static User findUser(ArrayList<User> users, Scanner reader) {
-
-        System.out.print("Enter your name: ");
-        String name = reader.next();
-
-        for (User u : users) {
-            if (u.getName().equalsIgnoreCase(name)) {
-                return u;
-            }
-        }
-
-        System.out.println("User not found");
-        return null;
-    }
 }

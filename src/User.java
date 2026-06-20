@@ -66,4 +66,8 @@ public class User {
             System.out.println(t);
         }
     }
+
+    public  double getBalance(){
+        return balance;
+    }
 }
